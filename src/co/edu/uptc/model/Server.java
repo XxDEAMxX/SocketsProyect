@@ -1,6 +1,6 @@
 package co.edu.uptc.model;
 
-import co.edu.uptc.configs.GlobalConfigs;
+import co.edu.uptc.configs.Global;
 import co.edu.uptc.pojos.*;
 import com.google.gson.Gson;
 
@@ -41,9 +41,9 @@ public class Server {
 
     public void putInfo(){
         inf = model.getInformation();
-        switch (GlobalConfigs.infoMode){
-            case GlobalConfigs.MODE_INFO1 -> info = new Gson().toJson(inf);
-            case GlobalConfigs.MODE_INFO2 ->{
+        switch (Global.infoMode){
+            case Global.INFO1 -> info = new Gson().toJson(inf);
+            case Global.INFO2 ->{
                 Rectangle rectangle = inf.getFigureInformation().getRectangle();
                 int x = rectangle.x << 22;
                 int y = rectangle.y << 12;
@@ -53,7 +53,7 @@ public class Server {
                 info =new Gson().toJson(new Info2(new FigureInformation2(num,inf.getFigureInformation().getColor()),
                         inf.getPanelInformation()));
             }
-            case GlobalConfigs.MODE_INFO3 -> putFile(null, null, GlobalConfigs.NO_FILE);
+            case Global.INFO3 -> putFile(null, null, Global.NO_FILE);
             default -> info = new Gson().toJson(inf.getFigureInformation().getRectangle());
         }
     }
@@ -100,17 +100,17 @@ public class Server {
         try {
             BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));
             int length = (int) file.length();
-            if (length > GlobalConfigs.BUFFER_SIZE){
+            if (length > Global.BUFFER_SIZE){
                 int count = 0;
-                byte[] byteArray = new byte[GlobalConfigs.BUFFER_SIZE];
+                byte[] byteArray = new byte[Global.BUFFER_SIZE];
                 while (count != length) {
                     count += bis.read(byteArray);
-                    putFile(file.getName(),byteArray, ( count == GlobalConfigs.BUFFER_SIZE ? GlobalConfigs.START_FILE :
-                            ( count == length ? GlobalConfigs.END_FILE : GlobalConfigs.KEEP_FILE ) ) );
+                    putFile(file.getName(),byteArray, ( count == Global.BUFFER_SIZE ? Global.START_FILE :
+                            ( count == length ? Global.END_FILE : Global.KEEP_FILE ) ) );
                     send();
                 }
             }else {
-                putFile(file.getName(), bis.readAllBytes(), GlobalConfigs.ALL_FILE);
+                putFile(file.getName(), bis.readAllBytes(), Global.ALL_FILE);
                 send();
             }
             bis.close();

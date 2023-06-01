@@ -1,6 +1,6 @@
 package co.edu.uptc.model;
 
-import co.edu.uptc.configs.GlobalConfigs;
+import co.edu.uptc.configs.Global;
 import co.edu.uptc.pojos.FileReading;
 import co.edu.uptc.pojos.Info1;
 import co.edu.uptc.pojos.Info2;
@@ -13,10 +13,10 @@ import java.net.ConnectException;
 import java.net.SocketException;
 
 public class Client {
-    Connection connection;
-    DataOutputStream dataOutputStream;
-    DataInputStream dataInputStream;
-    ModelClient model;
+    private Connection connection;
+
+    private DataInputStream dataInputStream;
+    private ModelClient model;
     private boolean writeFile;
     private BufferedOutputStream bos;
 
@@ -48,14 +48,14 @@ public class Client {
             String info;
             dataInputStream = new DataInputStream(connection.socket.getInputStream());
             info = dataInputStream.readUTF();
-            switch (GlobalConfigs.infoMode){
-                case GlobalConfigs.MODE_INFO1 -> {
+            switch (Global.infoMode){
+                case Global.INFO1 -> {
                     Info1 inf = new Gson().fromJson(info, Info1.class);
                     Rectangle rectangle = inf.getFigureInformation().getRectangle();
                     model.setRectangle(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
                     model.setInformation(inf.getFigureInformation().getColor(),inf.getPanelInformation().getColor());
                 }
-                case GlobalConfigs.MODE_INFO2 -> {
+                case Global.INFO2 -> {
                     Info2 inf = new Gson().fromJson(info, Info2.class);
                     int num = inf.getFigureInformation().getRectangle();
                     int x = num >>> 22;
@@ -65,9 +65,9 @@ public class Client {
                     model.setRectangle(x,y,w,h);
                     model.setInformation(inf.getFigureInformation().getColor(), inf.getPanelInformation().getColor());
                 }
-                case GlobalConfigs.MODE_INFO3 ->{
+                case Global.INFO3 ->{
                     Info3 inf = new Gson().fromJson(info,Info3.class);
-                    if (inf.getFileReading().getStatus() != GlobalConfigs.NO_FILE)
+                    if (inf.getFileReading().getStatus() != Global.NO_FILE)
                         saveFile(inf.getFileReading());
                     Rectangle rectangle = inf.getFigureInformation().getRectangle();
                     model.setRectangle(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
@@ -90,7 +90,7 @@ public class Client {
     }
 
     private void saveFile(FileReading fileReading) {
-        if (fileReading.getStatus() == GlobalConfigs.START_FILE || fileReading.getStatus() == GlobalConfigs.ALL_FILE) {
+        if (fileReading.getStatus() == Global.START_FILE || fileReading.getStatus() == Global.ALL_FILE) {
             writeFile = !new File(fileReading.getFileName()).exists();
             if (!writeFile)
                 writeFile = model.presenter.notifySelection("El archivo " + fileReading.getFileName() + " ya ha" +
@@ -98,11 +98,11 @@ public class Client {
         }
         if (writeFile){
             try {
-                if (fileReading.getStatus() != GlobalConfigs.ALL_FILE){
-                    if (fileReading.getStatus() == GlobalConfigs.START_FILE)
+                if (fileReading.getStatus() != Global.ALL_FILE){
+                    if (fileReading.getStatus() == Global.START_FILE)
                         bos = new BufferedOutputStream(new FileOutputStream(fileReading.getFileName()));
                     bos.write(fileReading.getData(),0,fileReading.getData().length);
-                    if (fileReading.getStatus() == GlobalConfigs.END_FILE){
+                    if (fileReading.getStatus() == Global.END_FILE){
                         bos.close();
                         model.presenter.notifyMessage("Se ha guardado el archivo" + fileReading.getFileName());
                     }

@@ -1,6 +1,6 @@
 package co.edu.uptc.view;
 
-import co.edu.uptc.configs.GlobalConfigs;
+import co.edu.uptc.configs.Global;
 import co.edu.uptc.presenter.Contract;
 
 import javax.swing.*;
@@ -21,8 +21,8 @@ public class DashBoard extends JFrame implements Contract.View {
 
     private void createComponents() {
         rectanglePanel = new RectanglePanel(this);
-        if (isServer && (GlobalConfigs.infoMode == GlobalConfigs.MODE_INFO2 ||
-                GlobalConfigs.infoMode == GlobalConfigs.MODE_INFO3)){
+        if (isServer && (Global.infoMode == Global.INFO2 ||
+                Global.infoMode == Global.INFO3)){
             add(rectanglePanel, BorderLayout.CENTER);
             SelectionPanel selectionPanel = new SelectionPanel(this);
             add(selectionPanel,BorderLayout.SOUTH);
@@ -31,8 +31,8 @@ public class DashBoard extends JFrame implements Contract.View {
     }
 
     private void putConfigs() {
-        setTitle(GlobalConfigs.TITLE);
-        setSize(GlobalConfigs.FRAME_DIMENSION);
+        setTitle(Global.TITLE);
+        setSize(Global.FRAME_DIMENSION);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         addComponentListener(new ComponentAdapter() {
@@ -61,7 +61,7 @@ public class DashBoard extends JFrame implements Contract.View {
 
     @Override
     public void notifyWarning(String value) {
-        JOptionPane.showMessageDialog(this,value,GlobalConfigs.TITLE,JOptionPane.WARNING_MESSAGE);
+        JOptionPane.showMessageDialog(this,value, Global.TITLE,JOptionPane.WARNING_MESSAGE);
     }
 
     @Override

@@ -1,6 +1,6 @@
 package co.edu.uptc.view;
 
-import co.edu.uptc.configs.GlobalConfigs;
+import co.edu.uptc.configs.Global;
 
 import javax.swing.*;
 import java.awt.*;
@@ -25,7 +25,7 @@ public class SelectionPanel extends JPanel {
         add(changeRectColor);
         changeColor.addActionListener(e -> changeColor());
         changeRectColor.addActionListener(e -> changeRectColor());
-        if (GlobalConfigs.infoMode == GlobalConfigs.MODE_INFO3){
+        if (Global.infoMode == Global.INFO3){
             JButton select = new JButton("seleccionar archivo");
             add(select);
             fileName = new JLabel("No seleccionado");
